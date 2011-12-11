@@ -1,0 +1,10 @@
+Build/
+*.suo
+*.sdf
+*.opensdf
+*/bin
+*/obj
+*/Debug
+*/Release
+*ipch
+*.user
