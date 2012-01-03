@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Text;
+using everadix.Properties;
 
 namespace everadix
 {
@@ -15,9 +16,9 @@ namespace everadix
         /// </summary>
         private static readonly byte[] Magic = new byte[] { 0x03, 0xF3, 0x0D, 0x0A, 0x14, 0x7E, 0x0D, 0x4B };
 
-        private const string PythonBase = "C://Python27//";
-        private const string PythonExecutable = "Python.exe";
-        private const string DecompylerScript = "uncompyle2";
+        private static readonly string PythonBase = Settings.Default.PythonBase;
+        private static readonly string PythonExecutable = Settings.Default.PythonExecutable;
+        private static readonly string DecompylerScript = Settings.Default.DecompylerScript;
 
         public static void VerifySetup()
         {

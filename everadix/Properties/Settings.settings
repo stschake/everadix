@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="everadix.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PythonBase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:/Python27/</Value>
+    </Setting>
+    <Setting Name="PythonExecutable" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Python.exe</Value>
+    </Setting>
+    <Setting Name="DecompylerScript" Type="System.String" Scope="User">
+      <Value Profile="(Default)">uncompyle2</Value>
+    </Setting>
+    <Setting Name="EVEPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:/Program Files (x86)/CCP/EVE/</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
