@@ -99,9 +99,18 @@ namespace everadix
                 var data = reader.ReadBytes(len);
                 var hello = Unmarshal.Process<eveMarshal.PyTuple>(data);
                 serverBuild = (int) hello[4].IntValue;
-                var updateInfo = (hello[6] as PyObjectData).Arguments as eveMarshal.PyDict;
-                clientBuild = (int) updateInfo.Get("build").IntValue;
-                codePackageURL = updateInfo.Get("fileurl").StringValue;
+				if (hello[6] is PyNone)
+				{
+					// no client patch available
+					clientBuild = serverBuild;
+					codePackageURL = null;
+				}
+				else
+				{
+					var updateInfo = (hello[6] as PyObjectData).Arguments as eveMarshal.PyDict;
+					clientBuild = (int)updateInfo.Get("build").IntValue;
+					codePackageURL = updateInfo.Get("fileurl").StringValue;
+				}
                 socket.Close();
                 return true;
             }

@@ -12,14 +12,47 @@ namespace everadix
             {
                 Decompyler.VerifySetup();
                 BuildInfo.Update(BuildInfo.SelectByHighestBuild(true));
-                var codePackage = BuildInfo.DownloadCode(true);
+				byte[] codePackage;
+				int codeBuild = BuildInfo.ClientBuild;
+				if (BuildInfo.CodePackageURL == null)
+				{
+					Console.WriteLine("[-] no client patch is available, fallback to clients compiled.code");
+					var path = Settings.Default.EVEPath + "/script/compiled.code";
+					if (!File.Exists(path))
+					{
+						Console.WriteLine("[-] failure: you have no compiled.code or your EVE path is wrong");
+						Console.WriteLine("[-] aborting");
+						return;
+					}
+					try
+					{
+						var common = File.ReadAllLines(Settings.Default.EVEPath + "/common.ini");
+						foreach (var line in common)
+						{
+							if (line.StartsWith("build="))
+							{
+								codeBuild = int.Parse(line.Substring(6));
+								Console.WriteLine("[-] (your client is on build " + codeBuild + ")");
+								break;
+							}
+						}
+					}
+					catch (Exception)
+					{
+						Console.WriteLine("[-] failed to read build from EVE common.ini, using server info: " + codeBuild);
+					}
+					codePackage = File.ReadAllBytes(Settings.Default.EVEPath + "/script/compiled.code");
+				}
+				else
+					codePackage = BuildInfo.DownloadCode(true);
+
                 Console.WriteLine("[+] initializing cryptographic backend");
                 Crypto.Initialize();
                 Console.WriteLine("[+] loading compyled code into repository");
                 var repo = new Repository();
                 ImportLibrary(repo);
                 repo.Import(new CodePackage(new MemoryStream(codePackage)));
-                repo.Decompyle(BuildInfo.ClientBuild + "\\", true);
+                repo.Decompyle(codeBuild + "\\", true);
             }
             catch (Exception ex)
             {
