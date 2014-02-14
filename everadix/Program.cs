@@ -16,11 +16,11 @@ namespace everadix
 				int codeBuild = BuildInfo.ClientBuild;
 				if (BuildInfo.CodePackageURL == null)
 				{
-					Console.WriteLine("[-] no client patch is available, fallback to clients compiled.code");
-					var path = Settings.Default.EVEPath + "/script/compiled.code";
+					Console.WriteLine("[-] no client patch is available, fallback to clients code.ccp");
+                    var path = Path.Combine(Settings.Default.EVEPath, "code.ccp");
 					if (!File.Exists(path))
 					{
-						Console.WriteLine("[-] failure: you have no compiled.code or your EVE path is wrong");
+						Console.WriteLine("[-] failure: you have no code.ccp or your EVE path is wrong");
 						Console.WriteLine("[-] aborting");
 						return;
 					}
@@ -41,7 +41,7 @@ namespace everadix
 					{
 						Console.WriteLine("[-] failed to read build from EVE common.ini, using server info: " + codeBuild);
 					}
-					codePackage = File.ReadAllBytes(Settings.Default.EVEPath + "/script/compiled.code");
+					codePackage = File.ReadAllBytes(Path.Combine(Settings.Default.EVEPath, "code.ccp"));
 				}
 				else
 					codePackage = BuildInfo.DownloadCode(true);
@@ -51,7 +51,7 @@ namespace everadix
                 Console.WriteLine("[+] loading compyled code into repository");
                 var repo = new Repository();
                 ImportLibrary(repo);
-                repo.Import(new CodePackage(new MemoryStream(codePackage)));
+                repo.Import(new CodeZip("code", new MemoryStream(codePackage)));
                 repo.Decompyle(codeBuild + "\\", true);
             }
             catch (Exception ex)
