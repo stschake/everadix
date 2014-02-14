@@ -22,18 +22,9 @@ namespace everadix
     {
         private static readonly Dictionary<EVEServer, string> ServerHosts = new Dictionary<EVEServer, string>
                                                                                 {
-                                                                                    {
-                                                                                        EVEServer.Tranquility,
-                                                                                        "87.237.38.200"
-                                                                                        },
-                                                                                    {
-                                                                                        EVEServer.Singularity,
-                                                                                        "87.237.38.50"
-                                                                                        },
-                                                                                    {
-                                                                                        EVEServer.Multiplicity,
-                                                                                        "87.237.38.51"
-                                                                                        },
+                                                                                    {EVEServer.Tranquility, "87.237.38.200"},
+                                                                                    {EVEServer.Singularity, "87.237.38.50"},
+                                                                                    {EVEServer.Multiplicity, "87.237.38.51"},
                                                                                     {EVEServer.Duality, "87.237.38.60"},
                                                                                     {EVEServer.Chaos, "87.237.38.55"}
                                                                                 };
@@ -77,7 +68,7 @@ namespace everadix
                         Console.WriteLine(clientBuild.ToString());
                     if (clientBuild > highestBuild)
                     {
-                        highestServer = (EVEServer) server;
+                        highestServer = (EVEServer)server;
                         highestBuild = clientBuild;
                     }
                 }
@@ -91,26 +82,25 @@ namespace everadix
         {
             try
             {
-                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-                                 {NoDelay = true};
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
                 socket.Connect(ServerHosts[server], 26000);
                 var reader = new BinaryReader(new NetworkStream(socket));
                 var len = reader.ReadInt32();
                 var data = reader.ReadBytes(len);
                 var hello = Unmarshal.Process<eveMarshal.PyTuple>(data);
-                serverBuild = (int) hello[4].IntValue;
-				if (hello[6] is PyNone)
-				{
-					// no client patch available
-					clientBuild = serverBuild;
-					codePackageURL = null;
-				}
-				else
-				{
-					var updateInfo = (hello[6] as PyObjectData).Arguments as eveMarshal.PyDict;
-					clientBuild = (int)updateInfo.Get("build").IntValue;
-					codePackageURL = updateInfo.Get("fileurl").StringValue;
-				}
+                serverBuild = (int)hello[4].IntValue;
+                if (hello[6] is PyNone)
+                {
+                    // no client patch available
+                    clientBuild = serverBuild;
+                    codePackageURL = null;
+                }
+                else
+                {
+                    var updateInfo = (hello[6] as PyObjectData).Arguments as eveMarshal.PyDict;
+                    clientBuild = (int)updateInfo.Get("build").IntValue;
+                    codePackageURL = updateInfo.Get("fileurl").StringValue;
+                }
                 socket.Close();
                 return true;
             }
